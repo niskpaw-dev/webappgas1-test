@@ -12,7 +12,6 @@
     :root {
       --primary-color: #6e8efb;
       --secondary-color: #a777e3;
-      --glass-bg: rgba(255, 255, 255, 0.2);
       --glass-border: rgba(255, 255, 255, 0.3);
     }
 
@@ -23,39 +22,46 @@
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       background-attachment: fixed;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       color: #fff;
     }
 
     .app-container {
-      width: 90%;
-      max-width: 400px;
-      padding: 30px;
-      background: var(--glass-bg);
+      width: 100%;
+      min-height: 100vh; /* Memastikan kotak memanjang sepenuhnya ke bawah */
+      padding: 40px 25px; /* Ruang bernafas */
+      box-sizing: border-box; /* Sangat penting supaya padding tidak merosakkan kelebaran 100% */
+      
+      /* Mengekalkan efek Glassmorphism tetapi untuk keseluruhan skrin */
+      background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      
+      /* Membuang border, bucu bulat dan bayang-bayang kotak lama */
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+
+      /* Menyusun semula form di tengah-tengah skrin secara menegak */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       text-align: center;
     }
 
-    h2 { margin-bottom: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+    h2 { margin-bottom: 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
 
-    .input-group { margin-bottom: 15px; text-align: left; }
+    .input-group { margin-bottom: 20px; text-align: left; }
 
-    label { display: block; margin-bottom: 5px; font-size: 0.9rem; opacity: 0.9; }
+    label { display: block; margin-bottom: 8px; font-size: 0.95rem; opacity: 0.9; }
 
     input {
       width: 100%;
-      padding: 12px;
+      padding: 15px;
       border: 1px solid var(--glass-border);
-      border-radius: 10px;
+      border-radius: 12px;
       background: rgba(255, 255, 255, 0.1);
       color: #fff;
-      font-size: 16px;
+      font-size: 16px; /* Wajib 16px elak auto-zoom iOS */
       box-sizing: border-box;
       outline: none;
       transition: 0.3s;
@@ -66,14 +72,14 @@
 
     button {
       width: 100%;
-      padding: 15px;
-      margin-top: 10px;
+      padding: 16px;
+      margin-top: 15px;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       background: #fff;
       color: var(--primary-color);
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 1.1rem;
       cursor: pointer;
       transition: 0.3s;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -81,7 +87,7 @@
 
     button:active { transform: scale(0.98); }
     .loading { opacity: 0.5; pointer-events: none; }
-    #statusMessage { margin-top: 20px; font-size: 0.9rem; min-height: 1.2rem; font-weight: bold; }
+    #statusMessage { margin-top: 20px; font-size: 0.95rem; min-height: 1.5rem; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -104,7 +110,8 @@
 
   <script>
     // 1. Integrasi GAS Backend
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwmUCO1jQtT3PPTOGHIiwuHZ2F2r41zVitq0ap2EkcZQjgAp2SQUfbxdscqF7eGOvqu/exec';
+    // PASTIKAN ANDA MASUKKAN SEMULA URL GAS ANDA DI BAWAH INI
+    const scriptURL = 'TAMPAL_URL_WEB_APP_GAS_ANDA_DI_SINI';
     const form = document.getElementById('mainForm');
     const btn = document.getElementById('submitBtn');
     const status = document.getElementById('statusMessage');
@@ -129,7 +136,7 @@
           body: JSON.stringify(formData)
         });
 
-        status.style.color = '#76ff03'; // Warna hijau neon
+        status.style.color = '#76ff03'; // Warna hijau terang
         status.innerText = 'Data berjaya dihantar!';
         form.reset();
 
