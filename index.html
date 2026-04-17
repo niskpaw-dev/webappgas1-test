@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sistem Pendaftaran</title>
+  
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#6e8efb">
+
+  <style>
+    :root {
+      --primary-color: #6e8efb;
+      --secondary-color: #a777e3;
+      --glass-bg: rgba(255, 255, 255, 0.2);
+      --glass-border: rgba(255, 255, 255, 0.3);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      background-attachment: fixed;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .app-container {
+      width: 90%;
+      max-width: 400px;
+      padding: 30px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      text-align: center;
+    }
+
+    h2 { margin-bottom: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+
+    .input-group { margin-bottom: 15px; text-align: left; }
+
+    label { display: block; margin-bottom: 5px; font-size: 0.9rem; opacity: 0.9; }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 16px;
+      box-sizing: border-box;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input::placeholder { color: rgba(255, 255, 255, 0.6); }
+    input:focus { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--primary-color);
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    button:active { transform: scale(0.98); }
+    .loading { opacity: 0.5; pointer-events: none; }
+    #statusMessage { margin-top: 20px; font-size: 0.9rem; min-height: 1.2rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <h2>Pendaftaran</h2>
+    <form id="mainForm">
+      <div class="input-group">
+        <label for="nama">Nama Penuh</label>
+        <input type="text" id="nama" placeholder="Cth: Ahmad Faiz" required>
+      </div>
+      <div class="input-group">
+        <label for="emel">Alamat Emel</label>
+        <input type="email" id="emel" placeholder="Cth: faiz@email.com" required>
+      </div>
+      <button type="submit" id="submitBtn">HANTAR DATA</button>
+    </form>
+    <div id="statusMessage"></div>
+  </div>
+
+  <script>
+    // 1. Integrasi GAS Backend
+    const scriptURL = 'TAMPAL_URL_WEB_APP_GAS_ANDA_DI_SINI';
+    const form = document.getElementById('mainForm');
+    const btn = document.getElementById('submitBtn');
+    const status = document.getElementById('statusMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      btn.innerText = 'MENGHANTAR...';
+      btn.classList.add('loading');
+      status.innerText = '';
+
+      const formData = {
+        nama: document.getElementById('nama').value,
+        emel: document.getElementById('emel').value
+      };
+
+      try {
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          mode: 'no-cors', 
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(formData)
+        });
+
+        status.style.color = '#76ff03'; // Warna hijau neon
+        status.innerText = 'Data berjaya dihantar!';
+        form.reset();
+
+      } catch (error) {
+        console.error('Ralat:', error);
+        status.style.color = '#ff5252'; // Warna merah
+        status.innerText = 'Gagal menyambung ke pangkalan data.';
+      } finally {
+        btn.innerText = 'HANTAR DATA';
+        btn.classList.remove('loading');
+      }
+    });
+
+    // 2. Pendaftaran Service Worker (PWA Offline Mode)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker aktif!', reg.scope))
+          .catch(err => console.error('Pendaftaran SW gagal:', err));
+      });
+    }
+  </script>
+</body>
+</html>
