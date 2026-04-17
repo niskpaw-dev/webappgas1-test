@@ -2,115 +2,204 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sistem Pendaftaran</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Aplikasi Pendaftaran</title>
   
   <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#6e8efb">
+  <meta name="theme-color" content="#1a1a2e">
 
   <style>
     :root {
-      --primary-color: #6e8efb;
-      --secondary-color: #a777e3;
-      --glass-border: rgba(255, 255, 255, 0.3);
+      --primary-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #ffffff;
+      --text-muted: #a0a0b5;
     }
 
     body {
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      background: radial-gradient(circle at top left, #1a1a2e, #16213e, #0f3460);
       background-attachment: fixed;
+      color: var(--text-main);
       min-height: 100vh;
-      color: #fff;
+      -webkit-tap-highlight-color: transparent; /* Buang kotak biru bila tekan di telefon */
     }
 
-    .app-container {
-      width: 100%;
-      min-height: 100vh; /* Memastikan kotak memanjang sepenuhnya ke bawah */
-      padding: 40px 25px; /* Ruang bernafas */
-      box-sizing: border-box; /* Sangat penting supaya padding tidak merosakkan kelebaran 100% */
-      
-      /* Mengekalkan efek Glassmorphism tetapi untuk keseluruhan skrin */
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      
-      /* Membuang border, bucu bulat dan bayang-bayang kotak lama */
-      border: none;
-      border-radius: 0;
-      box-shadow: none;
+    /* 1. APP HEADER (Melekat di Atas) */
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      padding-top: env(safe-area-inset-top, 20px); /* Untuk takuk/notch iPhone */
+      background: rgba(26, 26, 46, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      z-index: 100;
+    }
 
-      /* Menyusun semula form di tengah-tengah skrin secara menegak */
+    /* 2. KAWASAN KANDUNGAN */
+    .content-area {
+      padding: 100px 20px 120px 20px; /* Ruang untuk Header & Bottom Nav */
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      text-align: center;
+      gap: 20px;
     }
 
-    h2 { margin-bottom: 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+    /* Kad Borang Glassmorphism */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 25px 20px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
 
-    .input-group { margin-bottom: 20px; text-align: left; }
+    .form-title {
+      margin: 0 0 20px 0;
+      font-size: 1.1rem;
+      color: #4facfe;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
 
-    label { display: block; margin-bottom: 8px; font-size: 0.95rem; opacity: 0.9; }
+    .input-group { margin-bottom: 20px; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
 
     input {
       width: 100%;
-      padding: 15px;
+      padding: 16px;
       border: 1px solid var(--glass-border);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.2);
       color: #fff;
-      font-size: 16px; /* Wajib 16px elak auto-zoom iOS */
+      font-size: 16px; /* Saiz standard mobile */
       box-sizing: border-box;
       outline: none;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
 
-    input::placeholder { color: rgba(255, 255, 255, 0.6); }
-    input:focus { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
+    input::placeholder { color: rgba(255, 255, 255, 0.3); }
+    input:focus { border-color: #4facfe; background: rgba(255, 255, 255, 0.05); }
 
     button {
       width: 100%;
-      padding: 16px;
-      margin-top: 15px;
+      padding: 18px;
       border: none;
       border-radius: 12px;
-      background: #fff;
-      color: var(--primary-color);
+      background: var(--primary-gradient);
+      color: #fff;
       font-weight: bold;
       font-size: 1.1rem;
+      letter-spacing: 1px;
       cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+      transition: transform 0.2s;
     }
 
-    button:active { transform: scale(0.98); }
-    .loading { opacity: 0.5; pointer-events: none; }
-    #statusMessage { margin-top: 20px; font-size: 0.95rem; min-height: 1.5rem; font-weight: bold; }
+    button:active { transform: scale(0.96); }
+    .loading { opacity: 0.7; pointer-events: none; }
+    
+    #statusMessage { 
+      margin-top: 15px; 
+      font-size: 0.95rem; 
+      text-align: center; 
+      min-height: 1.5rem; 
+      font-weight: 600; 
+    }
+
+    /* 3. BOTTOM NAVIGATION (Melekat di Bawah) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 26, 46, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-around;
+      padding: 15px 0;
+      padding-bottom: env(safe-area-inset-bottom, 15px); /* Untuk iPhone home indicator */
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-item.active { color: #4facfe; }
+    .nav-icon { font-size: 1.4rem; margin-bottom: 4px; }
   </style>
 </head>
 <body>
 
-  <div class="app-container">
-    <h2>Pendaftaran</h2>
-    <form id="mainForm">
-      <div class="input-group">
-        <label for="nama">Nama Penuh</label>
-        <input type="text" id="nama" placeholder="Cth: Ahmad Faiz" required>
-      </div>
-      <div class="input-group">
-        <label for="emel">Alamat Emel</label>
-        <input type="email" id="emel" placeholder="Cth: faiz@email.com" required>
-      </div>
-      <button type="submit" id="submitBtn">HANTAR DATA</button>
-    </form>
-    <div id="statusMessage"></div>
+  <div class="app-header">
+    SISTEM DAFTAR
+  </div>
+
+  <div class="content-area">
+    <div class="glass-card">
+      <h3 class="form-title">Maklumat Peserta</h3>
+      
+      <form id="mainForm">
+        <div class="input-group">
+          <label for="nama">Nama Penuh</label>
+          <input type="text" id="nama" placeholder="Masukkan nama anda" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="emel">Alamat Emel</label>
+          <input type="email" id="emel" placeholder="contoh@emel.com" required>
+        </div>
+        
+        <button type="submit" id="submitBtn">HANTAR SEKARANG</button>
+        <div id="statusMessage"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <span class="nav-icon">⌂</span>
+      <span>Utama</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">📋</span>
+      <span>Rekod</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span>Tetapan</span>
+    </div>
   </div>
 
   <script>
-    // 1. Integrasi GAS Backend
-    // PASTIKAN ANDA MASUKKAN SEMULA URL GAS ANDA DI BAWAH INI
+    // PASTIKAN URL GAS ANDA DI SINI
     const scriptURL = 'TAMPAL_URL_WEB_APP_GAS_ANDA_DI_SINI';
     const form = document.getElementById('mainForm');
     const btn = document.getElementById('submitBtn');
@@ -119,7 +208,7 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      btn.innerText = 'MENGHANTAR...';
+      btn.innerText = 'MEMPROSES...';
       btn.classList.add('loading');
       status.innerText = '';
 
@@ -136,26 +225,25 @@
           body: JSON.stringify(formData)
         });
 
-        status.style.color = '#76ff03'; // Warna hijau terang
-        status.innerText = 'Data berjaya dihantar!';
+        status.style.color = '#4facfe'; // Biru terang 
+        status.innerText = '✓ Data berjaya disimpan!';
         form.reset();
 
       } catch (error) {
         console.error('Ralat:', error);
-        status.style.color = '#ff5252'; // Warna merah
-        status.innerText = 'Gagal menyambung ke pangkalan data.';
+        status.style.color = '#ff4b4b'; // Merah amaran
+        status.innerText = '✗ Gagal menyambung ke pelayan.';
       } finally {
-        btn.innerText = 'HANTAR DATA';
+        btn.innerText = 'HANTAR SEKARANG';
         btn.classList.remove('loading');
       }
     });
 
-    // 2. Pendaftaran Service Worker (PWA Offline Mode)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('Service Worker aktif!', reg.scope))
-          .catch(err => console.error('Pendaftaran SW gagal:', err));
+          .then(reg => console.log('SW Aktif!', reg.scope))
+          .catch(err => console.error('SW Gagal:', err));
       });
     }
   </script>
